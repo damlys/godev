@@ -1,0 +1,249 @@
+schemaVersion: 2.0.0
+commandTests:
+  - # https://aws.amazon.com/cli/
+    name: aws
+    command: aws
+    args:
+      - --version
+  - # https://learn.microsoft.com/en-us/cli/azure/
+    name: az
+    command: az
+    args:
+      - version
+  - # https://github.com/GoogleContainerTools/container-structure-test
+    name: container-structure-test
+    command: container-structure-test
+    args:
+      - version
+  - name: curl
+    command: curl
+    args:
+      - --version
+  - # https://github.com/go-delve/delve
+    name: dlv
+    command: dlv
+    args:
+      - version
+  - # https://docs.docker.com/engine/reference/commandline/cli/
+    name: docker
+    command: docker
+    args:
+      - --version
+  - # https://docs.docker.com/compose/reference/
+    name: docker compose
+    command: docker
+    args:
+      - compose
+      - version
+  - # https://cloud.google.com/sdk/gcloud
+    name: gcloud
+    command: gcloud
+    args:
+      - version
+  - # https://cli.github.com/
+    name: gh
+    command: gh
+    args:
+      - version
+  - # https://git-scm.com/
+    name: git
+    command: git
+    args:
+      - version
+  - # https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke
+    name: gke-gcloud-auth-plugin
+    command: gke-gcloud-auth-plugin
+    args:
+      - --version
+  - # https://go.dev/
+    name: go
+    command: go
+    args:
+      - version
+    expectedOutput:
+      - go version go1\.19\.
+  - name: gocomplete
+    command: gocomplete
+    args:
+      - --help
+  - # https://golangci-lint.run/
+    name: golangci-lint
+    command: golangci-lint
+    args:
+      - version
+  - name: gopls
+    command: gopls
+    args:
+      - version
+  - # https://goreleaser.com/
+    name: goreleaser
+    command: goreleaser
+    args:
+      - --version
+  - # https://vuln.go.dev/
+    name: govulncheck
+    command: govulncheck
+    args:
+      - -help
+  - # https://helm.sh/
+    name: helm
+    command: helm
+    args:
+      - version
+  - # https://htop.dev/
+    name: htop
+    command: htop
+    args:
+      - --version
+  - # https://stedolan.github.io/jq/
+    name: jq
+    command: jq
+    args:
+      - --version
+  - # https://k6.io/
+    name: k6
+    command: k6
+    args:
+      - version
+  - # https://k9scli.io/
+    name: k9s
+    command: k9s
+    args:
+      - version
+  - # https://kpt.dev/
+    name: kpt
+    command: kpt
+    args:
+      - version
+  - # https://kubectl.docs.kubernetes.io/references/kubectl/
+    # https://kubectl.docs.kubernetes.io/references/kustomize/
+    name: kubectl, kustomize
+    command: kubectl
+    args:
+      - version
+      - --client
+      - --output=yaml
+  - name: less
+    command: less
+    args:
+      - --version
+  - name: man
+    command: man
+    args:
+      - --version
+  - name: nano
+    command: nano
+    args:
+      - --version
+  - name: nmap
+    command: nmap
+    args:
+      - -V
+  - name: ping
+    command: ping
+    args:
+      - -V
+  - # https://github.com/mvdan/sh
+    name: shfmt
+    command: shfmt
+    args:
+      - --version
+  - # https://skaffold.dev/
+    name: skaffold
+    command: skaffold
+    args:
+      - version
+  - # https://github.com/mozilla/sops
+    name: sops
+    command: sops
+    args:
+      - --version
+  - name: ssh
+    command: ssh
+    args:
+      - -V
+  - # https://www.terraform.io/
+    name: terraform
+    command: terraform
+    args:
+      - version
+  - name: tree
+    command: tree
+    args:
+      - --version
+  - name: vim
+    command: vim
+    args:
+      - --version
+  - name: wget
+    command: wget
+    args:
+      - --version
+  - # https://mikefarah.gitbook.io/yq/
+    name: yq
+    command: yq
+    args:
+      - --version
+fileExistenceTests:
+  - name: az shell completion
+    path: /etc/bash_completion.d/az
+    shouldExist: true
+  - name: docker shell completion
+    path: /usr/share/bash-completion/completions/docker
+    shouldExist: true
+  - name: gcloud shell completion
+    path: /etc/bash_completion.d/gcloud
+    shouldExist: true
+  - name: gh shell completion
+    path: /etc/bash_completion.d/gh
+    shouldExist: true
+  - name: golangci-lint shell completion
+    path: /etc/bash_completion.d/golangci-lint
+    shouldExist: true
+  - name: goreleaser shell completion
+    path: /etc/bash_completion.d/goreleaser
+    shouldExist: true
+  - name: helm shell completion
+    path: /etc/bash_completion.d/helm
+    shouldExist: true
+  - name: k6 shell completion
+    path: /etc/bash_completion.d/k6
+    shouldExist: true
+  - name: k9s shell completion
+    path: /etc/bash_completion.d/k9s
+    shouldExist: true
+  - name: kpt shell completion
+    path: /etc/bash_completion.d/kpt
+    shouldExist: true
+  - name: kubectl shell completion
+    path: /etc/bash_completion.d/kubectl
+    shouldExist: true
+  - name: skaffold shell completion
+    path: /etc/bash_completion.d/skaffold
+    shouldExist: true
+  - name: yq shell completion
+    path: /etc/bash_completion.d/yq
+    shouldExist: true
+fileContentTests:
+  - name: aws shell completion
+    path: /root/.bashrc
+    expectedContents:
+      - .*complete -C /usr/local/bin/aws_completer aws.*
+  - name: go shell completion
+    path: /root/.bashrc
+    expectedContents:
+      - .*complete -C /go/bin/gocomplete go.*
+  - name: terraform shell completion
+    path: /root/.bashrc
+    expectedContents:
+      - .*complete -C /usr/local/bin/terraform terraform.*
+metadataTest:
+  user: root:root
+  workdir: /
+  entrypoint: []
+  cmd: ["bash"]
+  env:
+    - key: USE_GKE_GCLOUD_AUTH_PLUGIN
+      value: "True"
+  volumes: []
+  exposedPorts: []

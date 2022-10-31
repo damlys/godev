@@ -1,0 +1,64 @@
+name: workflow0
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - bashrc
+      - Dockerfile
+  pull_request:
+    branches:
+      - main
+    paths:
+      - bashrc
+      - Dockerfile
+jobs:
+  job0:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: git clone
+        uses: actions/checkout@v3
+      - name: setup docker qemu
+        uses: docker/setup-qemu-action@v2
+      - name: setup docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: docker login
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: "${{ github.repository_owner }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+      - name: docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/damlys/godev
+          tags: |
+            type=raw,value={{ date 'YYYY-MM-DD-HH-mm-ss' }}-{{ sha }}
+            type=raw,value=latest,enable={{ is_default_branch }}
+      - name: docker build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          load: true
+      - name: install container-structure-test
+        run: |
+          curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/download/v1.11.0/container-structure-test-linux-amd64
+          mv container-structure-test-linux-amd64 container-structure-test
+          chmod +x container-structure-test
+          ./container-structure-test version
+      - name: run container-structure-test
+        run: ./container-structure-test test --image="${{ fromJSON(steps.meta.outputs.json).tags[0] }}" --config=./container-structure-test.yaml
+      - name: docker build-push
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64/v8
+          push: true

@@ -1,0 +1,17 @@
+#############################
+### System
+#############################
+
+.DS_Store
+*.bak
+*.swp
+*.tmp
+*~
+desktop.ini
+thumbs.db
+
+#############################
+### Development Containers
+#############################
+
+kubeconfig.yaml
