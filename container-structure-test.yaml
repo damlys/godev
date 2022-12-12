@@ -10,6 +10,11 @@ commandTests:
     command: az
     args:
       - version
+  - # https://developer.hashicorp.com/terraform/cdktf
+    name: cdktf
+    command: cdktf
+    args:
+      - --version
   - # https://github.com/GoogleContainerTools/container-structure-test
     name: container-structure-test
     command: container-structure-test
@@ -188,6 +193,9 @@ fileExistenceTests:
   - name: az shell completion
     path: /etc/bash_completion.d/az
     shouldExist: true
+  - name: cdktf shell completion
+    path: /etc/bash_completion.d/cdktf
+    shouldExist: true
   - name: docker shell completion
     path: /usr/share/bash-completion/completions/docker
     shouldExist: true
@@ -242,7 +250,7 @@ metadataTest:
   workdir: /
   entrypoint: []
   cmd: ["bash"]
-  env:
+  envVars:
     - key: USE_GKE_GCLOUD_AUTH_PLUGIN
       value: "True"
   volumes: []

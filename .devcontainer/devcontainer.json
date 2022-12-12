@@ -6,7 +6,7 @@
   "image": "ghcr.io/damlys/godev:test", // "build": { "context": "..", "dockerfile": "../Dockerfile" },
   "runArgs": [
     "--name=devcontainer-godev",
-    "--env-file=${localEnv:HOME}${localEnv:USERPROFILE}/.devcontainer.env",
+    "--env-file=${localEnv:HOME}${localEnv:USERPROFILE}/workspace/devcontainer.env",
     "--add-host=kubernetes.docker.internal:host-gateway"
     //
   ],

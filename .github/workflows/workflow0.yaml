@@ -47,7 +47,7 @@ jobs:
           load: true
       - name: install container-structure-test
         run: |
-          curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/download/v1.11.0/container-structure-test-linux-amd64
+          curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/download/v1.14.0/container-structure-test-linux-amd64
           mv container-structure-test-linux-amd64 container-structure-test
           chmod +x container-structure-test
           ./container-structure-test version

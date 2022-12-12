@@ -55,6 +55,9 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.
 # goreleaser: https://goreleaser.com/install/#apt
 RUN echo "deb [trusted=yes] https://repo.goreleaser.com/apt/ /" | tee /etc/apt/sources.list.d/goreleaser.list
 
+# nodejs & npm: https://github.com/nodesource/distributions
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+
 RUN apt update && apt install --yes \
   docker-ce-cli \
   docker-compose-plugin \
@@ -66,12 +69,19 @@ RUN apt update && apt install --yes \
   jq \
   kubectl \
   nano \
+  nodejs \
   vim \
   && apt clean && rm -rf /var/lib/apt/lists/* \
   && gh completion -s bash > /etc/bash_completion.d/gh \
   && goreleaser completion bash > /etc/bash_completion.d/goreleaser \
   && kubectl completion bash > /etc/bash_completion.d/kubectl
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN="True"
+
+RUN npm install --global \
+  cdktf-cli \
+  npm \
+  && npm cache clean --force && rm -rf /root/.npm/* \
+  && cdktf completion > /etc/bash_completion.d/cdktf
 
 RUN pip install \
   awscli \
@@ -88,7 +98,7 @@ RUN true \
   && go clean -modcache && rm -rf /go/pkg/*
 
 # container-structure-test: https://github.com/GoogleContainerTools/container-structure-test/releases
-ARG CST_VERSION="1.11.0"
+ARG CST_VERSION="1.14.0"
 ADD https://github.com/GoogleContainerTools/container-structure-test/releases/download/v${CST_VERSION}/container-structure-test-${TARGETOS}-${TARGETARCH} \
   /usr/local/bin/container-structure-test
 RUN chmod a+x /usr/local/bin/container-structure-test
@@ -104,7 +114,7 @@ RUN cd /tmp \
   && golangci-lint completion bash > /etc/bash_completion.d/golangci-lint
 
 # helm: https://github.com/helm/helm/releases
-ARG HELM_VERSION="3.10.1"
+ARG HELM_VERSION="3.10.2"
 ADD https://get.helm.sh/helm-v${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz \
   /tmp/helm.tar.gz
 RUN cd /tmp \
@@ -114,7 +124,7 @@ RUN cd /tmp \
   && helm completion bash > /etc/bash_completion.d/helm
 
 # k6: https://github.com/grafana/k6/releases
-ARG K6_VERSION="0.40.0"
+ARG K6_VERSION="0.41.0"
 ADD https://github.com/grafana/k6/releases/download/v${K6_VERSION}/k6-v${K6_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz \
   /tmp/k6.tar.gz
 RUN cd /tmp \
@@ -134,20 +144,20 @@ RUN cd /tmp \
   && k9s completion bash > /etc/bash_completion.d/k9s
 
 # kpt: https://github.com/GoogleContainerTools/kpt/releases
-ARG KPT_VERSION="1.0.0-beta.21"
+ARG KPT_VERSION="1.0.0-beta.24"
 ADD https://github.com/GoogleContainerTools/kpt/releases/download/v${KPT_VERSION}/kpt_${TARGETOS}_${TARGETARCH} \
   /usr/local/bin/kpt
 RUN chmod a+x /usr/local/bin/kpt \
   && kpt completion bash > /etc/bash_completion.d/kpt
 
 # shfmt: https://github.com/mvdan/sh/releases
-ARG SHFMT_VERSION="3.5.1"
+ARG SHFMT_VERSION="3.6.0"
 ADD https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_${TARGETOS}_${TARGETARCH} \
   /usr/local/bin/shfmt
 RUN chmod a+x /usr/local/bin/shfmt
 
 # skaffold: https://github.com/GoogleContainerTools/skaffold/releases
-ARG SKAFFOLD_VERSION="2.0.1"
+ARG SKAFFOLD_VERSION="2.0.3"
 ADD https://github.com/GoogleContainerTools/skaffold/releases/download/v${SKAFFOLD_VERSION}/skaffold-${TARGETOS}-${TARGETARCH} \
   /usr/local/bin/skaffold
 RUN chmod a+x /usr/local/bin/skaffold \
@@ -159,8 +169,8 @@ ADD https://github.com/mozilla/sops/releases/download/v${SOPS_VERSION}/sops-v${S
   /usr/local/bin/sops
 RUN chmod a+x /usr/local/bin/sops
 
-# terraform: https://www.terraform.io/downloads
-ARG TERRAFORM_VERSION="1.3.3"
+# terraform: https://developer.hashicorp.com/terraform/downloads
+ARG TERRAFORM_VERSION="1.3.6"
 ADD https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
   /tmp/terraform.zip
 RUN cd /tmp \
@@ -169,7 +179,7 @@ RUN cd /tmp \
   && rm -r /tmp/*
 
 # yq: https://github.com/mikefarah/yq/releases
-ARG YQ_VERSION="4.29.2"
+ARG YQ_VERSION="4.30.5"
 ADD https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_${TARGETOS}_${TARGETARCH} \
   /usr/local/bin/yq
 RUN chmod a+x /usr/local/bin/yq \
